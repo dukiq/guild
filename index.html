@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Городской Строитель</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+
+        /* Стиль для начального экрана */
+        #startScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .flag {
+            width: 50px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        #resources, #buildings {
+            display: none;
+        }
+
+        /* Игровые элементы */
+        #resources {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .resource, .building {
+            border: 1px solid #000;
+            padding: 10px;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div id="startScreen">
+        <h1 id="chooseLang">Выберите язык / Wybierz język</h1>
+        <div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Flag_of_Russia.svg" class="flag" id="russianFlag" alt="Русский">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Flag_of_Poland.svg" class="flag" id="polishFlag" alt="Polski">
+        </div>
+        <button id="startButton" disabled>Начать / Rozpocznij</button>
+    </div>
+
+    <h1 id="gameTitle">Городской Строитель</h1>
+
+    <div id="resources">
+        <div class="resource">
+            <h3 id="woodLabel">Древесина</h3>
+            <p id="wood">0</p>
+        </div>
+        <div class="resource">
+            <h3 id="stoneLabel">Камень</h3>
+            <p id="stone">0</p>
+        </div>
+        <div class="resource">
+            <h3 id="foodLabel">Еда</h3>
+            <p id="food">0</p>
+        </div>
+    </div>
+
+    <div id="buildings">
+        <div class="building">
+            <h3 id="sawmillTitle">Лесопилка</h3>
+            <p id="sawmillDesc">Производит древесину</p>
+            <button onclick="buildSawmill()" id="buildSawmillButton">Построить лесопилку (10 дерева)</button>
+            <p id="sawmills">Лесопилок: 0</p>
+        </div>
+        <div class="building">
+            <h3 id="farmTitle">Ферма</h3>
+            <p id="farmDesc">Производит еду</p>
+            <button onclick="buildFarm()" id="buildFarmButton">Построить ферму (10 дерева)</button>
+            <p id="farms">Ферм: 0</p>
+        </div>
+        <div class="building">
+            <h3 id="quarryTitle">Каменоломня</h3>
+            <p id="quarryDesc">Производит камень</p>
+            <button onclick="buildQuarry()" id="buildQuarryButton">Построить каменоломню (10 дерева)</button>
+            <p id="quarries">Каменоломен: 0</p>
+        </div>
+    </div>
+
+    <script>
+        let wood = 0;
+        let stone = 0;
+        let food = 0;
+
+        let sawmills = 0;
+        let farms = 0;
+        let quarries = 0;
+
+        let selectedLanguage = null;
+
+        // Переводы на русский и польский языки
+        const translations = {
+            ru: {
+                gameTitle: "Городской Строитель",
+                woodLabel: "Древесина",
+                stoneLabel: "Камень",
+                foodLabel: "Еда",
+                sawmillTitle: "Лесопилка",
+                sawmillDesc: "Производит древесину",
+                buildSawmillButton: "Построить лесопилку (10 дерева)",
+                farmTitle: "Ферма",
+                farmDesc: "Производит еду",
+                buildFarmButton: "Построить ферму (10 дерева)",
+                quarryTitle: "Каменоломня",
+                quarryDesc: "Производит камень",
+                buildQuarryButton: "Построить каменоломню (10 дерева)"
+            },
+            pl: {
+                gameTitle: "Budowniczy Miasta",
+                woodLabel: "Drewno",
+                stoneLabel: "Kamień",
+                foodLabel: "Jedzenie",
+                sawmillTitle: "Tartak",
+                sawmillDesc: "Produkuje drewno",
+                buildSawmillButton: "Zbuduj tartak (10 drewna)",
+                farmTitle: "Farma",
+                farmDesc: "Produkuje jedzenie",
+                buildFarmButton: "Zbuduj farmę (10 drewna)",
+                quarryTitle: "Kamieniołom",
+                quarryDesc: "Produkuje kamień",
+                buildQuarryButton: "Zbuduj kamieniołom (10 drewna)"
+            }
+        };
+
+        // Выбор языка
+        document.getElementById("russianFlag").addEventListener("click", () => {
+            selectedLanguage = "ru";
+            document.getElementById("startButton").disabled = false;
+        });
+
+        document.getElementById("polishFlag").addEventListener("click", () => {
+            selectedLanguage = "pl";
+            document.getElementById("startButton").disabled = false;
+        });
+
+        // Старт игры
+        document.getElementById("startButton").addEventListener("click", () => {
+            if (selectedLanguage) {
+                setLanguage(selectedLanguage);
+                document.getElementById("startScreen").style.display = "none";
+                document.getElementById("resources").style.display = "flex";
+                document.getElementById("buildings").style.display = "block";
+            }
+        });
+
+        // Функция для установки языка
+        function setLanguage(lang) {
+            document.getElementById("gameTitle").innerText = translations[lang].gameTitle;
+            document.getElementById("woodLabel").innerText = translations[lang].woodLabel;
+            document.getElementById("stoneLabel").innerText = translations[lang].stoneLabel;
+            document.getElementById("foodLabel").innerText = translations[lang].foodLabel;
+            document.getElementById("sawmillTitle").innerText = translations[lang].sawmillTitle;
+            document.getElementById("sawmillDesc").innerText = translations[lang].sawmillDesc;
+            document.getElementById("buildSawmillButton").innerText = translations[lang].buildSawmillButton;
+            document.getElementById("farmTitle").innerText = translations[lang].farmTitle;
+            document.getElementById("farmDesc").innerText = translations[lang].farmDesc;
+            document.getElementById("buildFarmButton").innerText = translations[lang].buildFarmButton;
+            document.getElementById("quarryTitle").innerText = translations[lang].quarryTitle;
+            document.getElementById("quarryDesc").innerText = translations[lang].quarryDesc;
+            document.getElementById("buildQuarryButton").innerText = translations[lang].buildQuarryButton;
+        }
+
+        // Сбор ресурсов
+        function gatherResources() {
+            wood += sawmills;
+            stone += quarries;
+            food += farms;
+            updateResources();
+        }
+
+        function buildSawmill() {
+            if (wood >= 10) {
+                wood -= 10;
+                sawmills++;
+                updateResources();
+            } else {
+                alert("Недостаточно дерева!");
+            }
+        }
+
+        function buildFarm() {
+            if (wood >= 10) {
+                wood -= 10;
+                farms++;
+                updateResources();
+            } else {
+                alert("Недостаточно дерева!");
+            }
+        }
+
+        function buildQuarry() {
+            if (wood >= 10) {
+                wood -= 10;
+                quarries++;
+                updateResources();
+            } else {
+                alert("Недостаточно дерева!");
+            }
+        }
+
+        function updateResources() {
+            document.getElementById("wood").innerText = wood;
+            document.getElementById("stone").innerText = stone;
+            document.getElementById("food").innerText = food;
+
+            document.getElementById("sawmills").innerText = "Лесопилок: " + sawmills;
+            document.getElementById("farms").innerText = "Ферм: " + farms;
+            document.getElementById("quarries").innerText = "Каменоломен: " + quarries;
+        }
+
+        setInterval(gatherResources, 1000); // сбор ресурсов каждую секунду
+    </script>
+</body>
+</html>
