@@ -9,6 +9,14 @@
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 20px;
+            background: url('https://images.unsplash.com/photo-1534281161653-e994d62e5d55') no-repeat center center;
+            background-size: cover;
+            color: white;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
         }
 
         /* Стиль для начального экрана */
@@ -18,8 +26,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: black;
-            color: white;
+            background-color: rgba(0, 0, 0, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -28,15 +35,30 @@
         }
 
         .flag {
-            width: 50px;
-            margin: 10px;
+            width: 80px;
+            margin: 20px;
             cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .flag:hover {
+            transform: scale(1.2);
         }
 
         button {
-            padding: 10px;
+            padding: 15px;
             margin-top: 20px;
-            font-size: 16px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
         }
 
         #resources, #buildings {
@@ -48,13 +70,41 @@
             display: flex;
             justify-content: space-around;
             margin-bottom: 20px;
+            font-size: 18px;
         }
 
         .resource, .building {
-            border: 1px solid #000;
-            padding: 10px;
-            width: 100px;
+            border: 1px solid white;
+            padding: 20px;
+            width: 150px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
         }
+
+        .resource img, .building img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .resource p, .building p {
+            margin: 10px 0;
+        }
+
+        .building button {
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .building button:hover {
+            background-color: #2980b9;
+        }
+
     </style>
 </head>
 <body>
@@ -71,14 +121,17 @@
 
     <div id="resources">
         <div class="resource">
+            <img src="https://image.flaticon.com/icons/png/512/2916/2916124.png" alt="Wood">
             <h3 id="woodLabel">Древесина</h3>
             <p id="wood">0</p>
         </div>
         <div class="resource">
+            <img src="https://image.flaticon.com/icons/png/512/2916/2916115.png" alt="Stone">
             <h3 id="stoneLabel">Камень</h3>
             <p id="stone">0</p>
         </div>
         <div class="resource">
+            <img src="https://image.flaticon.com/icons/png/512/2916/2916094.png" alt="Food">
             <h3 id="foodLabel">Еда</h3>
             <p id="food">0</p>
         </div>
@@ -86,18 +139,21 @@
 
     <div id="buildings">
         <div class="building">
+            <img src="https://image.flaticon.com/icons/png/512/3488/3488424.png" alt="Sawmill">
             <h3 id="sawmillTitle">Лесопилка</h3>
             <p id="sawmillDesc">Производит древесину</p>
             <button onclick="buildSawmill()" id="buildSawmillButton">Построить лесопилку (10 дерева)</button>
             <p id="sawmills">Лесопилок: 0</p>
         </div>
         <div class="building">
+            <img src="https://image.flaticon.com/icons/png/512/3488/3488432.png" alt="Farm">
             <h3 id="farmTitle">Ферма</h3>
             <p id="farmDesc">Производит еду</p>
             <button onclick="buildFarm()" id="buildFarmButton">Построить ферму (10 дерева)</button>
             <p id="farms">Ферм: 0</p>
         </div>
         <div class="building">
+            <img src="https://image.flaticon.com/icons/png/512/3488/3488409.png" alt="Quarry">
             <h3 id="quarryTitle">Каменоломня</h3>
             <p id="quarryDesc">Производит камень</p>
             <button onclick="buildQuarry()" id="buildQuarryButton">Построить каменоломню (10 дерева)</button>
@@ -116,7 +172,6 @@
 
         let selectedLanguage = null;
 
-        // Переводы на русский и польский языки
         const translations = {
             ru: {
                 gameTitle: "Городской Строитель",
@@ -150,7 +205,6 @@
             }
         };
 
-        // Выбор языка
         document.getElementById("russianFlag").addEventListener("click", () => {
             selectedLanguage = "ru";
             document.getElementById("startButton").disabled = false;
@@ -161,17 +215,15 @@
             document.getElementById("startButton").disabled = false;
         });
 
-        // Старт игры
         document.getElementById("startButton").addEventListener("click", () => {
             if (selectedLanguage) {
                 setLanguage(selectedLanguage);
                 document.getElementById("startScreen").style.display = "none";
                 document.getElementById("resources").style.display = "flex";
-                document.getElementById("buildings").style.display = "block";
+                document.getElementById("buildings").style.display = "flex";
             }
         });
 
-        // Функция для установки языка
         function setLanguage(lang) {
             document.getElementById("gameTitle").innerText = translations[lang].gameTitle;
             document.getElementById("woodLabel").innerText = translations[lang].woodLabel;
@@ -188,7 +240,6 @@
             document.getElementById("buildQuarryButton").innerText = translations[lang].buildQuarryButton;
         }
 
-        // Сбор ресурсов
         function gatherResources() {
             wood += sawmills;
             stone += quarries;
@@ -236,7 +287,7 @@
             document.getElementById("quarries").innerText = "Каменоломен: " + quarries;
         }
 
-        setInterval(gatherResources, 1000); // сбор ресурсов каждую секунду
+        setInterval(gatherResources, 1000);
     </script>
 </body>
 </html>
